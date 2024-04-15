@@ -38,7 +38,10 @@
           fi
 
           nixos-install --no-root-passwd
-          nixos-enter --root /mnt -c 'passwd nixos'
+          while :; do
+            nixos-enter --root /mnt -c 'passwd nixos' && break
+          done
+          umount /mnt
 
           gum confirm --affirmative="OK" --negative="" --timeout=59s "System will be rebooted. Eject the install media!" && reboot
         ''
