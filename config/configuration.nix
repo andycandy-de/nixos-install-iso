@@ -4,6 +4,7 @@
   imports = [
     ./hardware-configuration.nix
     ./bootloader-mbr.nix
+    ./modules/fish.nix
     # ./modules/swapfile.nix
     # ./modules/gnome.nix
   ];
