@@ -1,19 +1,24 @@
 { config, lib, pkgs, ... }:
 
-{
+let
+  nerdfontPackage = "JetBrainsMono";
+  nerdfontName = "JetBrainsMono Nerd Font Mono";
+  keyboadLayout = "de";
+  timeZone = "Europe/Berlin";
+  locale = "de_DE.UTF-8";
+in {
   imports = [
     ./hardware-configuration.nix
     ./bootloader-mbr.nix
-    ./modules/fish.nix
+    ./modules/zsh.nix
     # ./modules/swapfile.nix
-    # ./modules/gnome.nix
   ];
 
-  time.timeZone = "Europe/Berlin";
-  i18n.defaultLocale = "de_DE.UTF-8";
+  time.timeZone = timeZone;
+  i18n.defaultLocale = locale;
   console = {
     font = "Lat2-Terminus16";
-    keyMap = "de";
+    keyMap = keyboadLayout;
   };
 
   users.users.nixos = {
@@ -31,22 +36,40 @@
 
   environment.systemPackages = with pkgs; [
     vim
+    helix
     htop
     wget
-    vtm
+    zellij
     nnn
     firefox
     browsh
+    bat
+    fzf
+    eza
   ];
-
-  environment.shellAliases = {
-    fm = "nnn -dH && test -f \${XDG_CONFIG_HOME:-$HOME/.config}/nnn/.lastd && . \${XDG_CONFIG_HOME:-$HOME/.config}/nnn/.lastd && rm -f \${XDG_CONFIG_HOME:-$HOME/.config}/nnn/.lastd";
-    wm = "vtm";
-  };
 
   # virtualisation.docker.enable = true;
 
-  services.openssh.enable = true;
+  fonts.packages = [
+    (pkgs.nerdfonts.override { fonts = [ nerdfontPackage ]; })
+  ];
+
+  services = {
+
+    openssh.enable = true;
+
+    kmscon = {
+      enable = true;
+      extraConfig = "xkb-layout=${keyboadLayout}";
+      extraOptions = "--term xterm-256color";
+      fonts = [
+        {
+          name = nerdfontName;
+          package = (pkgs.nerdfonts.override { fonts = [ nerdfontPackage ]; });
+        }
+      ];
+    };
+  };
 
   # networking.firewall.allowedTCPPorts = [];
   # networking.firewall.allowedUDPPorts = [];
