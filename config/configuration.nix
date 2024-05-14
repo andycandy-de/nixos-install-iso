@@ -32,8 +32,6 @@ in {
     ];
   };
 
-  # security.sudo.wheelNeedsPassword = false;
-
   environment.systemPackages = with pkgs; [
     vim
     helix
@@ -48,15 +46,18 @@ in {
     eza
   ];
 
-  # virtualisation.docker.enable = true;
-
   fonts.packages = [
     (pkgs.nerdfonts.override { fonts = [ nerdfontPackage ]; })
   ];
 
+  # security.sudo.wheelNeedsPassword = false;
+
   services = {
 
-    openssh.enable = true;
+    openssh = {
+      enable = true;
+      # settings.PasswordAuthentication = false;
+    };
 
     kmscon = {
       enable = true;
@@ -70,6 +71,8 @@ in {
       ];
     };
   };
+
+  # virtualisation.docker.enable = true;
 
   # networking.firewall.allowedTCPPorts = [];
   # networking.firewall.allowedUDPPorts = [];
